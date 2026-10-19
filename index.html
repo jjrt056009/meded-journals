@@ -1,0 +1,325 @@
+<p>test `${x}` "q"</p>
+  indented<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>醫學教育投稿期刊清單</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 單欄工作頁 — 標題列、分類分頁與篩選列、可橫向捲動的期刊表、附註 */
+:root{
+  --bg:#f5f8f9; --surface:#ffffff; --fg:#17262b; --muted:#5b6f75; --line:#d7e2e5;
+  --accent:#0e6e74; --accent-soft:#e1f0f0; --warn:#9a5b00; --warn-soft:#fbf0dc;
+  --star:#c98a10;
+  --f-display:"Noto Serif TC","Songti TC",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1719; --surface:#162226; --fg:#e3eced; --muted:#93a8ad; --line:#26373c;
+  --accent:#5ec3c6; --accent-soft:#183538; --warn:#f0b65a; --warn-soft:#3a2c14; --star:#f0b65a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1719; --surface:#162226; --fg:#e3eced; --muted:#93a8ad; --line:#26373c;
+  --accent:#5ec3c6; --accent-soft:#183538; --warn:#f0b65a; --warn-soft:#3a2c14; --star:#f0b65a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:18px;line-height:1.7}
+.wrap{max-width:1320px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+header{display:grid;gap:6px}
+.eyebrow{font-size:15px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+h1{font-family:var(--f-display);font-size:clamp(24px,4vw,34px);margin:0;text-wrap:balance;line-height:1.25}
+.lede{color:var(--muted);margin:0;max-width:62ch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px 14px;border-radius:999px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.tab .n{font-family:var(--f-mono);font-size:15px;opacity:.75;margin-left:6px}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.controls input[type=search]{font:inherit;font-size:17px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);min-width:0;flex:1 1 220px;max-width:340px}
+.controls label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:17px;cursor:pointer}
+.controls select{font:inherit;font-size:17px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.rank{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted);font-size:16px;width:2.5em}
+.rank b{color:var(--accent);font-size:18px}
+.ifnote{display:block;font-size:14px;color:var(--muted)}
+.rt{display:inline-block;font-size:14px;font-weight:700;padding:1px 8px;border-radius:999px;margin:6px 6px 0 0;border:1px solid var(--accent)}
+.rt.l3{background:var(--accent);color:var(--surface)}
+.rt.l2{color:var(--accent);background:var(--accent-soft)}
+.rt.l1{color:var(--accent);background:transparent;font-weight:500}
+.rt.lu{color:var(--muted);border-color:var(--line);font-weight:500}
+.rt.l0{color:var(--warn);background:var(--warn-soft);border-color:var(--warn)}
+.rtwhy{display:block;font-size:15px;color:var(--muted);margin-top:4px;max-width:32ch}
+.rtwhy b{color:var(--fg);font-family:var(--f-mono);font-weight:500}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:1240px}
+@media (max-width:900px){
+  .controls input[type=search]{flex:1 1 100%;max-width:none}
+  .tablebox{overflow:visible;background:transparent;border:0;border-radius:0}
+  table{min-width:0;display:block}
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  tbody{display:grid;gap:12px}
+  tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 12px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+  tbody td{display:block;padding:0;border:0;min-width:0}
+  td.rank,td.jname,td.desc,td.c-types{grid-column:1/-1}
+  td.rank{width:auto;font-size:15px}
+  td.rank::before{content:"#";}
+  td[data-label]::before{content:attr(data-label);display:block;font-size:14px;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:4px}
+  td.c-idx,td.c-if,td.c-easy{padding-top:12px;border-top:1px solid var(--line)}
+  td.desc{padding-top:12px;border-top:1px solid var(--line)}
+  .desc,.why,.rtwhy,.types{max-width:none}
+  .jname a{font-size:20px}
+  .empty{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+}
+@media (max-width:600px){
+  tbody tr{grid-template-columns:repeat(2,minmax(0,1fr))}
+  td.c-easy{grid-column:1/-1}
+}
+.types{max-width:40ch;display:grid;gap:6px}
+.atype{display:flex;flex-wrap:wrap;gap:4px}
+.atype span{font-size:14px;padding:1px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.topic{font-size:16px;color:var(--fg)}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+th{font-size:15px;letter-spacing:.06em;color:var(--muted);font-weight:700;background:var(--bg);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+.jname a{color:var(--fg);font-weight:700;text-decoration:none;border-bottom:1px solid var(--line)}
+.jname a:hover{color:var(--accent);border-color:var(--accent)}
+.jsite{display:block;font-size:15px;color:var(--muted);margin-top:4px;word-break:break-all}
+.pub{display:block;font-size:15px;color:var(--muted)}
+.cat{display:inline-block;font-size:14px;color:var(--accent);background:var(--accent-soft);padding:1px 8px;border-radius:999px;margin-top:6px}
+.idx{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-family:var(--f-mono);font-size:15px;padding:2px 7px;border-radius:4px;border:1px solid var(--accent);color:var(--accent)}
+.flag{font-size:14px;color:var(--warn);background:var(--warn-soft);padding:2px 6px;border-radius:4px;white-space:nowrap}
+.if{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:18px;white-space:nowrap}
+.q{display:block;font-size:15px;color:var(--muted)}
+.stars{color:var(--star);letter-spacing:2px;white-space:nowrap}
+.why{display:block;font-size:15px;color:var(--muted);margin-top:2px;max-width:22ch}
+.desc{max-width:44ch}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.notes{display:grid;gap:10px;font-size:17px;color:var(--muted)}
+.notes h2{font-family:var(--f-display);font-size:18px;color:var(--fg);margin:0}
+.notes ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:16px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">投稿標的清單 · 2026 年 10 月整理</span>
+    <h1>醫學教育 SCIE／SSCI 投稿期刊</h1>
+    <p class="lede">依「醫學教育、模擬教學、科技輔助」三類整理，已排除牙醫、獸醫與 ESCI 期刊。點期刊名稱可開啟官方網站。IF 以 Clarivate JCR 為準，投稿前請再到 Master Journal List 核對收錄狀態。</p>
+  </header>
+
+  <div class="tabs" role="tablist" id="tabs"></div>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="搜尋期刊名稱或主題，例如：模擬、跨職類" aria-label="搜尋期刊">
+    <label for="sort">排序
+      <select id="sort">
+        <option value="default">預設（依分類）</option>
+        <option value="if-desc">IF 高 → 低</option>
+        <option value="if-asc">IF 低 → 高</option>
+        <option value="easy-desc">新手友善 高 → 低</option>
+        <option value="easy-asc">新手友善 低 → 高</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="rtfirst" checked> 呼吸治療相關優先</label>
+    <label><input type="checkbox" id="easy"> 只看新手友善（★★★）</label>
+    <label><input type="checkbox" id="verified"> 隱藏「待核對」</label>
+  </div>
+
+  <div class="legend">
+    <span><span class="rt l3">RT 刊登紀錄・多</span> ≥10 篇</span>
+    <span><span class="rt l2">RT 刊登紀錄・中</span> 3–9 篇</span>
+    <span><span class="rt l1">RT 刊登紀錄・少</span> 1–2 篇</span>
+    <span><span class="rt lu">無法判斷</span> PubMed 收錄不完整</span>
+    <span><span class="rt l0">尚無 RT 刊登紀錄</span> PubMed 查無</span>
+  </div>
+  <p class="lede" style="font-size:16px">RT 刊登紀錄依 PubMed 實際查詢（2026/10/19）：該期刊標題或摘要提到「呼吸治療師／學生／教育」的篇數。「呼吸治療相關優先」勾選時依此分級排序，同級內再依篇數與你選的排序排列。IF 排序說明：範圍值（如 5.2–7.0）以中位數排序，「待查」的期刊一律排在最後。</p>
+  <div class="legend">
+    <span><span class="stars">★★★</span> 新手友善：接受率較高、重實務</span>
+    <span><span class="stars">★★☆</span> 中等</span>
+    <span><span class="stars">★☆☆</span> 高門檻：需強理論框架與嚴謹方法</span>
+  </div>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr><th>排名</th><th>期刊／官方網站</th><th>索引類型</th><th>IF</th><th>新手友善</th><th>期刊簡介</th><th>常見文章類型與內容</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>沒有符合條件的期刊，請調整搜尋或篩選。</div>
+  </div>
+
+  <section class="notes">
+    <h2>使用說明</h2>
+    <ul>
+      <li><b>SCI 與 SCIE：</b>Clarivate 已將 SCI 併入 SCIE，現在統一稱 SCIE。</li>
+      <li><b>SCIE+SSCI：</b>「Education, Scientific Disciplines」與「Nursing」類別同時屬於兩種索引，所以多數醫教、護理教育期刊兩者皆有。</li>
+      <li><b>IF 年版：</b>標示「2026」為 2026 年 6 月 JCR（2025 年引用資料）；「2025」為前一年版。不同網站數字有落差時以範圍呈現。</li>
+      <li><b>常見文章類型：</b>依各期刊作者須知與近年刊出內容整理，文章類型名稱偶有變動，投稿前請以官網 Author Guidelines 為準。</li>
+      <li><b>RT 刊登紀錄怎麼查的：</b>在 PubMed 以 respiratory therapist(s)、respiratory therapy students、respiratory therapy education、respiratory care practitioners 檢索各期刊的標題與摘要；Respiratory Care 另加上 education、training、simulation 等教育詞。篇數包含「研究對象包含 RT」的跨職類研究，不全是 RT 主導的文章。</li>
+      <li><b>「尚無 RT 刊登紀錄」的意思：</b>只表示用上述關鍵字在 PubMed 查不到，不代表期刊不收 RT 的稿件。投稿時可多花一點篇幅說明 RT 在研究中的角色。</li>
+      <li><b>待核對：</b>收錄類型或 IF 未能從公開來源確認，請用醫院圖書館的 JCR 或 mjl.clarivate.com 查證。</li>
+      <li><b>已排除的 ESCI 期刊：</b>Medical Science Educator、Journal of Medical Education and Curricular Development、Advances in Medical Education and Practice、Global Surgical Education（有 IF 但不是 SCIE／SSCI）。</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const CATS=[{id:"all",label:"全部"},{id:"edu",label:"醫學教育相關"},{id:"sim",label:"模擬教學相關"},{id:"tech",label:"科技輔助相關"}];
+const D=[
+ // 醫學教育相關
+ {c:"edu",n:"Academic Medicine",p:"AAMC／Wolters Kluwer",u:"https://journals.lww.com/academicmedicine",i:["SCIE","SSCI"],f:"5.2–7.0",y:"各來源不一",q:"Q1",s:1,w:"北美最具影響力，接受率約一成",d:"美國醫學院協會（AAMC）官方期刊，涵蓋醫學教育、學術醫學領導與政策，議題設定能力強。"},
+ {c:"edu",n:"Medical Education",p:"ASME／Wiley",u:"https://asmepublications.onlinelibrary.wiley.com/journal/13652923",i:["SCIE","SSCI"],f:"5.2",y:"2025",q:"Q1",s:1,w:"重理論與研究方法",d:"英國醫學教育學會期刊，與 Academic Medicine 並列頂尖，偏好有理論框架的研究。"},
+ {c:"edu",n:"Medical Teacher",p:"AMEE／Taylor & Francis",u:"https://www.tandfonline.com/journals/imte20",i:["SCIE","SSCI"],f:"3.3–4.4",y:"各來源不一",q:"Q1",s:2,w:"臨床教師常投，重教學創新",d:"歐洲醫學教育學會（AMEE）期刊，比前兩本更偏實務，適合發表教學方案與教學創新。"},
+ {c:"edu",n:"Advances in Health Sciences Education",p:"Springer",u:"https://link.springer.com/journal/10459",i:["SCIE","SSCI"],f:"3.3",y:"2025",q:"Q1",s:1,w:"偏理論、認知與評量研究",d:"健康科學教育的理論與實務研究，常見臨床推理、評量與學習認知主題。"},
+ {c:"edu",n:"Perspectives on Medical Education",p:"Ubiquity Press（OA）",u:"https://pmejournal.org",i:["SCIE","SSCI"],f:"3.9",y:"2025",q:"Q1",s:2,w:"OA，歡迎新觀點與質性研究",d:"開放取用的醫學教育期刊，重視研究的觀點與理論貢獻，文章類型多元。"},
+ {c:"edu",n:"Medical Education Online",p:"Taylor & Francis（OA）",u:"https://www.tandfonline.com/journals/zmeo20",i:["SCIE","SSCI"],f:"3.8",y:"2025",q:"Q1",s:2,w:"OA，審稿速度一般",d:"開放取用期刊，收錄各階段醫學與健康專業教育研究。"},
+ {c:"edu",n:"BMC Medical Education",p:"BMC／Springer Nature（OA）",u:"https://bmcmededuc.biomedcentral.com",i:["SCIE","SSCI"],f:"4.2",y:"2026",q:"Q1",s:3,w:"看科學效度不看新穎性，接受率約四成",d:"發文量最大的醫教期刊，從學生到資深人員的健康專業教育都收；需支付 OA 費用。"},
+ {c:"edu",n:"Teaching and Learning in Medicine",p:"Taylor & Francis",u:"https://www.tandfonline.com/journals/htlm20",i:["SCIE","SSCI"],f:"1.8–3.1",y:"各來源不一",q:"Q2",s:2,w:"專注教學方法",d:"聚焦教學方法與學習歷程，主題含學習環境、跨職類教育、身心安適、師資培育。"},
+ {c:"edu",n:"The Clinical Teacher",p:"ASME／Wiley",u:"https://asmepublications.onlinelibrary.wiley.com/journal/1743498x",i:["SCIE","SSCI"],f:"1.2–1.6",y:"各來源不一",q:"Q3–Q4",s:3,w:"寫作偏實務，適合臨床教師",d:"Medical Education 的姊妹刊，對象是在醫療現場教學的各職類人員，文章短而實用。"},
+ {c:"edu",n:"J. of Continuing Education in the Health Professions",p:"Wolters Kluwer",u:"https://journals.lww.com/jcehp",i:["SCIE","SSCI"],f:"1.8",y:"2026",q:"Q2",s:2,w:"在職教育、師資培育",d:"聚焦醫事人員繼續教育、專業發展與實務改變，適合在職訓練與臨床教師研究。"},
+ {c:"edu",n:"Journal of Graduate Medical Education",p:"ACGME",u:"https://meridian.allenpress.com/jgme",i:["待核對"],f:"約 2.8",y:"待核對",q:"—",s:2,w:"住院醫師／PGY 訓練",d:"美國畢業後醫學教育評鑑委員會期刊，專注住院醫師與專科訓練。收錄類型請先查證。",v:1},
+ {c:"edu",n:"Anatomical Sciences Education",p:"AAA／Wiley",u:"https://anatomypubs.onlinelibrary.wiley.com/journal/19359780",i:["SCIE","SSCI"],f:"4.7",y:"2025",q:"Q1",s:2,w:"基礎醫學、質性研究專刊",d:"解剖與基礎醫學教育，近年也大量刊登健康專業教育的質性研究與 AI 教學。"},
+ {c:"edu",n:"Advances in Physiology Education",p:"American Physiological Society",u:"https://journals.physiology.org/journal/advances",i:["SCIE"],f:"1.9",y:"2026",q:"Q2",s:3,w:"呼吸生理教學可投",d:"生理學教學專刊，適合呼吸生理、機械通氣原理等教學設計與評估。"},
+ {c:"edu",n:"Journal of Surgical Education",p:"Elsevier",u:"https://www.sciencedirect.com/journal/journal-of-surgical-education",i:["SCIE"],f:"2.2",y:"2026",q:"Q2",s:2,w:"外科取向",d:"外科訓練、EPA、評量與學員福祉；同時列在教育與外科兩個類別。"},
+ {c:"edu",n:"Nurse Education Today",p:"Elsevier",u:"https://www.sciencedirect.com/journal/nurse-education-today",i:["SCIE","SSCI"],f:"4.2",y:"2025",q:"Q1",s:2,w:"跨職類、模擬主題接受度高",d:"護理教育旗艦期刊，常刊登跨職類教育與模擬教學研究。"},
+ {c:"edu",n:"Nurse Education in Practice",p:"Elsevier",u:"https://www.sciencedirect.com/journal/nurse-education-in-practice",i:["SCIE","SSCI"],f:"4.5",y:"2026",q:"Q1",s:3,w:"明言支持新作者，也收其他職類",d:"重視教育與臨床實務的連結，歡迎案例研究與教學創新，並收錄其他醫療職類的教育論文。"},
+ {c:"edu",n:"Journal of Nursing Education",p:"SLACK／Healio",u:"https://journals.healio.com/journal/jne",i:["SCIE","SSCI"],f:"待查",y:"—",q:"—",s:2,w:"月刊，主題廣",d:"護理教育月刊，涵蓋模擬、臨床教育、實證教學。IF 請查最新 JCR。",v:1},
+ {c:"edu",n:"Nurse Educator",p:"Wolters Kluwer",u:"https://journals.lww.com/nurseeducatoronline",i:["SCIE","SSCI"],f:"待查",y:"—",q:"—",s:3,w:"短篇、教學創新",d:"護理教師期刊，近期刊登臨床學習環境中的歸屬感等主題。IF 請查最新 JCR。",v:1},
+ {c:"edu",n:"J. of Continuing Education in Nursing",p:"SLACK／Healio",u:"https://journals.healio.com/journal/jcen",i:["SCIE","SSCI"],f:"待查",y:"—",q:"—",s:3,w:"新進人員轉銜、在職訓練",d:"護理在職教育，常見新進人員轉銜、模擬在職訓練。收錄類型與 IF 請查證。",v:1},
+ {c:"edu",n:"American Journal of Pharmaceutical Education",p:"AACP／Elsevier",u:"https://www.ajpe.org",i:["SCIE","SSCI"],f:"3.5",y:"2025",q:"Q1",s:2,w:"藥學取向，跨職類可投",d:"美國藥學院協會期刊，主題含 OSCE、跨職類教育、情緒智商與身心安適。"},
+ {c:"edu",n:"Currents in Pharmacy Teaching and Learning",p:"Elsevier",u:"https://www.sciencedirect.com/journal/currents-in-pharmacy-teaching-and-learning",i:["待核對"],f:"1.4",y:"2025",q:"Q3",s:3,w:"藥學教學實務",d:"藥學教學與學習實務，含跨職類教育。收錄類型請先查證。",v:1},
+ {c:"edu",n:"Journal of Interprofessional Care",p:"Taylor & Francis",u:"https://www.tandfonline.com/journals/ijic20",i:["SCIE","SSCI"],f:"待查",y:"—",q:"—",s:2,w:"跨專業團隊教育首選",d:"跨專業教育、合作實務與研究，主題含團隊效能、ICU、臨床實習。IF 請查最新 JCR。",v:1},
+ {c:"edu",n:"Respiratory Care",p:"AARC（美國呼吸照護學會）",u:"https://rc.rcjournal.com",i:["SCIE"],f:"待查",y:"—",q:"—",s:2,w:"RT 專業期刊，也收教育研究",d:"呼吸治療專業期刊，有刊登 RT 教育與人力相關研究，讀者群最貼近呼吸治療師。",v:1},
+ // 模擬教學相關
+ {c:"sim",n:"Simulation in Healthcare",p:"SSH／Wolters Kluwer",u:"https://journals.lww.com/simulationinhealthcare",i:["SCIE"],f:"2.9",y:"2025",q:"—",s:2,w:"模擬領域代表期刊",d:"美國模擬醫學會官方期刊，涵蓋安全與品質訓練、能力評估標準、虛擬實境等。"},
+ {c:"sim",n:"Clinical Simulation in Nursing",p:"INACSL／Elsevier",u:"https://www.nursingsimulation.org",i:["SCIE","SSCI"],f:"待查",y:"—",q:"—",s:3,w:"模擬教學實務",d:"國際護理模擬學會期刊，月刊，主題含 prebriefing、虛擬模擬、臨床推理。IF 請查最新 JCR。",v:1},
+ {c:"sim",n:"Advances in Simulation",p:"SESAM／BMC（OA）",u:"https://advancesinsimulation.biomedcentral.com",i:["待核對"],f:"待查",y:"—",q:"—",s:2,w:"OA，歡迎所有職類",d:"歐洲醫學模擬學會官方期刊，收所有醫療職類與跨專業的模擬研究。收錄類型請先查證。",v:1},
+ // 科技輔助相關
+ {c:"tech",n:"JMIR Medical Education",p:"JMIR Publications（OA）",u:"https://mededu.jmir.org",i:["SCIE"],f:"12.5",y:"2025",q:"Q1（類別第 1）",s:2,w:"AI、數位學習熱門",d:"數位與科技輔助的健康專業教育，AI／大型語言模型主題引用率高；需支付 OA 費用。"},
+ {c:"tech",n:"JMIR Serious Games",p:"JMIR Publications（OA）",u:"https://games.jmir.org",i:["SCIE"],f:"4.7",y:"2026",q:"Q1",s:2,w:"遊戲化、VR 教學",d:"嚴肅遊戲、遊戲化、模擬與沉浸式 VR 在健康教育與臨床的應用。"},
+ {c:"tech",n:"CIN: Computers, Informatics, Nursing",p:"Wolters Kluwer",u:"https://journals.lww.com/cinjournal",i:["SCIE","SSCI"],f:"2.3",y:"2026",q:"Q2",s:3,w:"護理資訊與數位教學",d:"護理資訊、數位工具與科技輔助教學，同時列在電腦科學與護理類別。"},
+ {c:"tech",n:"Computers & Education",p:"Elsevier",u:"https://www.sciencedirect.com/journal/computers-and-education",i:["SSCI"],f:"13.2",y:"2026",q:"Q1",s:1,w:"教育科技頂刊，門檻高",d:"教育科技領域頂尖期刊，非醫學專刊，需強理論與嚴謹設計。"},
+ {c:"tech",n:"British Journal of Educational Technology",p:"BERA／Wiley",u:"https://bera-journals.onlinelibrary.wiley.com/journal/14678535",i:["SSCI"],f:"13.0",y:"2026",q:"Q1",s:1,w:"教育科技頂刊，門檻高",d:"英國教育研究學會期刊，主題含線上與混成學習、創新教學法。"},
+ {c:"tech",n:"Journal of Computer Assisted Learning",p:"Wiley",u:"https://onlinelibrary.wiley.com/journal/13652729",i:["SSCI"],f:"4.6",y:"2025",q:"Q1",s:2,w:"數位學習、學習分析",d:"電腦輔助學習與數位學習研究，非醫學專刊，健康專業數位教學研究可考慮。"}
+];
+// [等級, PubMed 篇數, 說明]  等級：3 高、2 中、1 低、0.5 無法判斷、0 尚無紀錄
+const RT={
+ "Respiratory Care":[3,169,"呼吸治療專業期刊，RT 教育、訓練、模擬相關文章最多"],
+ "Journal of Interprofessional Care":[3,13,"跨職類研究常將 RT 納入團隊成員"],
+ "BMC Medical Education":[3,10,"有多篇以 RT 或 RT 學生為對象的教育研究"],
+ "Simulation in Healthcare":[2,6,"多為含 RT 的跨職類模擬（氣道、急救）"],
+ "Academic Medicine":[2,4,"多為跨職類研究中提及 RT，非 RT 主題"],
+ "Journal of Surgical Education":[2,4,"多為外科團隊訓練中的 RT 角色"],
+ "J. of Continuing Education in Nursing":[2,4,"在職訓練研究曾納入 RT"],
+ "Medical Education":[2,3,"少數跨職類研究提及 RT"],
+ "Medical Teacher":[1,2,"偶有跨職類研究提及 RT"],
+ "Teaching and Learning in Medicine":[1,2,"偶有跨職類研究提及 RT"],
+ "J. of Continuing Education in the Health Professions":[1,1,"僅 1 篇提及 RT"],
+ "Journal of Graduate Medical Education":[1,1,"僅 1 篇提及 RT"],
+ "Nurse Education Today":[1,1,"僅 1 篇提及 RT"],
+ "Advances in Simulation":[1,1,"僅 1 篇提及 RT"],
+ "JMIR Serious Games":[1,1,"僅 1 篇提及 RT"],
+ "Clinical Simulation in Nursing":[0.5,null,"PubMed 只收錄極少數文章，無法用此方法判斷"],
+ "Advances in Health Sciences Education":[0,0,"查無提及 RT 的文章"],
+ "Perspectives on Medical Education":[0,0,"查無提及 RT 的文章"],
+ "Medical Education Online":[0,0,"查無提及 RT 的文章"],
+ "The Clinical Teacher":[0,0,"查無；但收稿對象包含各職類臨床教師，RT 稿件可投"],
+ "Anatomical Sciences Education":[0,0,"查無提及 RT 的文章"],
+ "Advances in Physiology Education":[0,0,"查無；但呼吸生理教學主題對口"],
+ "Nurse Education in Practice":[0,0,"查無；但期刊明言收其他職類"],
+ "Journal of Nursing Education":[0,0,"查無提及 RT 的文章"],
+ "Nurse Educator":[0,0,"查無提及 RT 的文章"],
+ "American Journal of Pharmaceutical Education":[0,0,"查無，藥學取向"],
+ "Currents in Pharmacy Teaching and Learning":[0,0,"查無，藥學取向"],
+ "JMIR Medical Education":[0,0,"查無提及 RT 的文章"],
+ "CIN: Computers, Informatics, Nursing":[0,0,"查無，護理資訊取向"],
+ "Computers & Education":[0,null,"非醫學期刊，PubMed 未收錄，幾乎不刊登臨床職類研究"],
+ "British Journal of Educational Technology":[0,null,"非醫學期刊，PubMed 未收錄，幾乎不刊登臨床職類研究"],
+ "Journal of Computer Assisted Learning":[0,null,"非醫學期刊，PubMed 未收錄，幾乎不刊登臨床職類研究"]
+};
+const rtLabel=l=>l>=3?["l3","RT 刊登紀錄・多"]:l>=2?["l2","RT 刊登紀錄・中"]:l>=1?["l1","RT 刊登紀錄・少"]:l>0?["lu","無法判斷"]:["l0","尚無 RT 刊登紀錄"];
+const T={
+ "Academic Medicine":[["Research Report","Innovation Report","Perspective","Invited Commentary"],"大型量性或混合研究、醫學院政策與課程改革、多元公平、學員身心健康、評量制度；觀點文比例高。"],
+ "Medical Education":[["Original Research","Really Good Stuff","Commentary","Cross-cutting Edge"],"有明確教育理論框架的質性研究（紮根理論、現象學）、專業認同形成、學習環境、評量效度；「Really Good Stuff」可投短篇教學創新。"],
+ "Medical Teacher":[["Original Research","Short Communication","AMEE Guide","Twelve Tips"],"教學方案設計與成效評估、臨床教學、OSCE、回饋與師資培育；「Twelve Tips」實務型文章很適合臨床教師。"],
+ "Advances in Health Sciences Education":[["Original Research","Reflections","Review"],"認知心理與臨床推理、評量心理計量、專業發展理論；重方法論與理論貢獻。"],
+ "Perspectives on Medical Education":[["Original Research","Show and Tell","Eye-Opener","Writer's Craft"],"質性與批判性研究、新理論觀點、研究方法討論；「Show and Tell」可投教學創新。"],
+ "Medical Education Online":[["Research Article","Review","Short Communication"],"各階段醫學與健康專業教育的問卷調查、課程評估、線上學習、學生身心狀態。"],
+ "BMC Medical Education":[["Research Article","Systematic Review","Study Protocol","Debate"],"問卷調查、前後測教學介入、量表信效度、質性訪談、系統性回顧；各職類、各國研究皆收，範圍最廣。"],
+ "Teaching and Learning in Medicine":[["Research","Innovation","Educational Case Report"],"教學法與學習歷程、學習環境、跨職類教育、師資培育、學員身心安適。"],
+ "The Clinical Teacher":[["Research Article","Insights","Toolbox","Short Report"],"臨床現場教學技巧、回饋、臨床教師師資培育、小型教學改善方案；篇幅短、實務導向。"],
+ "J. of Continuing Education in the Health Professions":[["Original Research","Innovation","Review"],"在職教育成效、專業行為改變、知識轉譯、組織學習、實務品質改善。"],
+ "Journal of Graduate Medical Education":[["Original Research","Brief Report","Educational Innovation","Rip Out"],"住院醫師訓練、里程碑與 EPA 評量、學員倦怠與心理安全、指導老師角色。"],
+ "Anatomical Sciences Education":[["Research Report","Descriptive Article","Review"],"解剖與基礎醫學教學、VR/3D 模型、大體解剖、質性研究、AI 測驗表現。"],
+ "Advances in Physiology Education":[["Research Article","How We Teach","Illuminations"],"生理學課程設計、主動學習、實驗課與概念診斷；「How We Teach」適合分享呼吸生理教學。"],
+ "Journal of Surgical Education":[["Original Report","Review","Perspective"],"外科技能訓練與模擬、EPA、評量、住院醫師招募與倦怠。"],
+ "Nurse Education Today":[["Research Article","Systematic Review","Meta-analysis"],"護理學生臨床實習、模擬教學成效（常見網絡統合分析）、臨床推理、跨職類教育。"],
+ "Nurse Education in Practice":[["Research Article","Review","Case Study","Innovation"],"臨床教學實務、臨床指導者、自我效能、同儕支持、心理健康、教學創新案例。"],
+ "Journal of Nursing Education":[["Major Article","Educational Innovation","Research Brief"],"護理課程、模擬教學、實證教學、學生成效與多元包容。"],
+ "Nurse Educator":[["Feature Article","Teaching Tip","Commentary"],"教學策略與小技巧、考試與評量、臨床學習環境、學員歸屬感；篇幅較短。"],
+ "J. of Continuing Education in Nursing":[["Original Article","Teaching Tips","Leadership"],"新進人員轉銜與輔導、在職模擬訓練、臨床判斷、專業發展。"],
+ "American Journal of Pharmaceutical Education":[["Research Article","Brief Report","Instructional Design","Commentary"],"藥學課程設計、OSCE、跨職類教育、學生身心安適與專業素養。"],
+ "Currents in Pharmacy Teaching and Learning":[["Research","Instructional Design and Assessment","Reflection"],"藥學教學實務、課堂主動學習、實習教育、跨職類合作。"],
+ "Journal of Interprofessional Care":[["Original Article","Short Report","Review"],"跨專業教育（IPE）課程與評估、團隊合作、角色認知、ICU 與照護團隊實務。"],
+ "Respiratory Care":[["Original Research","Review","Special Article"],"以臨床呼吸照護研究為主；教育類多為 RT 教育成效、人力與工作負荷、專業認證。"],
+ "Simulation in Healthcare":[["Empirical Investigation","Technical Report","Review","Concepts and Commentary"],"模擬教學成效、引導反思（debriefing）、團隊訓練、能力評量、模擬方法學。"],
+ "Clinical Simulation in Nursing":[["Featured Article","Research Brief","Simulation Scenario"],"Prebriefing 與 debriefing、虛擬模擬、情境設計、臨床推理與情境覺察。"],
+ "Advances in Simulation":[["Research","Innovation","Methodological Article"],"跨職類模擬、引導反思、心理安全與團隊動態、模擬研究方法。"],
+ "JMIR Medical Education":[["Original Paper","Viewpoint","Review","Tutorial"],"AI 與大型語言模型應用、數位與線上學習、VR/AR、教育科技評估。"],
+ "JMIR Serious Games":[["Original Paper","Review","Protocol"],"嚴肅遊戲、遊戲化學習、沉浸式 VR 在健康教育與復健的應用。"],
+ "CIN: Computers, Informatics, Nursing":[["Feature Article","Review","Research Brief"],"護理資訊系統、數位教學工具、電子病歷與科技接受度。"],
+ "Computers & Education":[["Research Article","Review"],"教育科技學習成效、AI 輔助學習、VR 協作學習、學習分析；常要求實驗設計。"],
+ "British Journal of Educational Technology":[["Original Article","Review","Special Section"],"線上與混成學習、創新教學法、教育科技政策與理論。"],
+ "Journal of Computer Assisted Learning":[["Original Article","Review"],"數位學習參與度、協作式線上學習、學習分析、多媒體學習設計。"]
+};
+function ifNum(d){const m=String(d.f).match(/\d+(\.\d+)?/g);if(!m)return null;const v=m.map(Number);return v.length>1?(v[0]+v[1])/2:v[0]}
+const starTxt=s=>"★".repeat(s)+"☆".repeat(3-s);
+const esc=t=>String(t).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+let cur="all";
+try{const s=localStorage.getItem("mj-tab");if(s&&CATS.some(c=>c.id===s))cur=s}catch(e){}
+const tabs=document.getElementById("tabs");
+function drawTabs(){tabs.innerHTML=CATS.map(c=>{const n=c.id==="all"?D.length:D.filter(d=>d.c===c.id).length;return `<button class="tab" role="tab" id="tab-${c.id}" aria-selected="${c.id===cur}" data-id="${c.id}">${c.label}<span class="n">${n}</span></button>`}).join("")}
+tabs.addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;cur=b.dataset.id;try{localStorage.setItem("mj-tab",cur)}catch(e){}drawTabs();draw()});
+const catLabel=id=>CATS.find(c=>c.id===id).label;
+function draw(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const easy=document.getElementById("easy").checked, ver=document.getElementById("verified").checked;
+  const sort=document.getElementById("sort").value;
+  let list=D.filter(d=>(cur==="all"||d.c===cur)&&(!easy||d.s===3)&&(!ver||!d.v)&&(!q||(d.n+d.p+d.d+d.w).toLowerCase().includes(q)));
+  const rtFirst=document.getElementById("rtfirst").checked;
+  const base=new Map(D.map((d,k)=>[d.n,k]));
+  {
+    const dir=sort.endsWith("desc")?-1:1;
+    list=[...list].sort((a,b)=>{
+      if(rtFirst){const ra=(RT[a.n]||[0])[0],rb=(RT[b.n]||[0])[0];if(ra!==rb)return rb-ra;if(sort==="default"){const ca=(RT[a.n]||[])[1]||0,cb=(RT[b.n]||[])[1]||0;if(ca!==cb)return cb-ca}}
+      if(sort==="default")return base.get(a.n)-base.get(b.n);
+      if(sort.startsWith("if")){
+        const x=ifNum(a),y=ifNum(b);
+        if(x===null&&y===null)return b.s-a.s;
+        if(x===null)return 1; if(y===null)return -1;
+        return x===y?b.s-a.s:(x-y)*dir;
+      }
+      if(a.s!==b.s)return (a.s-b.s)*dir;
+      const x=ifNum(a)??-1,y=ifNum(b)??-1;return y-x;
+    });
+  }
+  document.getElementById("rows").innerHTML=list.map((d,k)=>`<tr>
+    <td class="rank">${sort==="default"&&!rtFirst?k+1:`<b>${k+1}</b>`}</td>
+    <td class="jname"><a href="${d.u}" target="_blank" rel="noopener">${esc(d.n)}</a><span class="pub">${esc(d.p)}</span><span class="jsite">${esc(d.u.replace(/^https:\/\//,""))}</span>${RT[d.n]?`<span class="rt ${rtLabel(RT[d.n][0])[0]}">${rtLabel(RT[d.n][0])[1]}</span>`:""}${cur==="all"?`<span class="cat">${catLabel(d.c)}</span>`:""}${RT[d.n]?`<span class="rtwhy">${RT[d.n][1]!=null?`PubMed <b>${RT[d.n][1]}</b> 篇｜`:""}${esc(RT[d.n][2])}</span>`:""}</td>
+    <td class="c-idx" data-label="索引類型"><div class="idx">${d.i.map(x=>x==="待核對"?`<span class="flag">待核對</span>`:`<span class="chip">${x}</span>`).join("")}</div></td>
+    <td class="c-if" data-label="IF"><span class="if">${esc(d.f)}</span><span class="q">${esc(d.q)}${d.y&&d.y!=="—"?" · "+esc(d.y):""}</span></td>
+    <td class="c-easy" data-label="新手友善"><span class="stars" aria-label="${d.s} 顆星">${starTxt(d.s)}</span><span class="why">${esc(d.w)}</span></td>
+    <td class="desc" data-label="期刊簡介">${esc(d.d)}</td>
+    <td class="c-types" data-label="常見文章類型與內容">${T[d.n]?`<div class="types"><div class="atype">${T[d.n][0].map(x=>`<span>${esc(x)}</span>`).join("")}</div><div class="topic">${esc(T[d.n][1])}</div></div>`:"—"}</td></tr>`).join("");
+  document.getElementById("empty").hidden=list.length>0;
+}
+["q","easy","verified","sort","rtfirst"].forEach(id=>document.getElementById(id).addEventListener("input",draw));
+try{const s=localStorage.getItem("mj-sort");if(s)document.getElementById("sort").value=s}catch(e){}
+document.getElementById("sort").addEventListener("change",e=>{try{localStorage.setItem("mj-sort",e.target.value)}catch(err){}draw()});
+drawTabs();draw();
+</script>
+
+</body>
+</html>
